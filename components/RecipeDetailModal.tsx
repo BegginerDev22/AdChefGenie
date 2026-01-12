@@ -249,7 +249,20 @@ const RecipeDetailModal: React.FC<Props> = ({ recipe, isOpen, onClose, isSaved, 
                     <ul className="space-y-3">
                         {recipe.ingredients.map((ing, idx) => (
                             <li key={idx} className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800 last:border-0">
-                                <span className="text-gray-800 dark:text-gray-200 font-medium">{ing.name}</span>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-700">
+                                        <img 
+                                            src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(ing.name + " food ingredient")}&w=80&h=80&c=7&rs=1&p=0`}
+                                            alt={ing.name}
+                                            className="w-full h-full object-cover"
+                                            loading="lazy"
+                                            onError={(e) => {
+                                                e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/3565/3565418.png'; 
+                                            }}
+                                        />
+                                    </div>
+                                    <span className="text-gray-800 dark:text-gray-200 font-medium">{ing.name}</span>
+                                </div>
                                 <span className="text-gray-500 dark:text-gray-400 text-sm font-mono bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded">
                                     {scaleAmount(ing.amount, recipe.servings || 2, currentServings)}
                                 </span>

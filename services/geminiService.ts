@@ -3,10 +3,56 @@ import { Recipe } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+const recipeSchema = {
+  type: Type.OBJECT,
+  properties: {
+    name: { type: Type.STRING },
+    description: { type: Type.STRING },
+    calories: { type: Type.STRING },
+    prepTime: { type: Type.STRING },
+    cookTime: { type: Type.STRING },
+    difficulty: { type: Type.STRING },
+    cuisine: { type: Type.STRING },
+    servings: { type: Type.INTEGER },
+    ingredients: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          name: { type: Type.STRING },
+          amount: { type: Type.STRING }
+        },
+        required: ["name", "amount"]
+      }
+    },
+    steps: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING }
+    },
+    tags: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING }
+    },
+    nutrition: {
+      type: Type.OBJECT,
+      properties: {
+        protein: { type: Type.STRING },
+        carbs: { type: Type.STRING },
+        fat: { type: Type.STRING },
+        fiber: { type: Type.STRING }
+      },
+      required: ["protein", "carbs", "fat", "fiber"]
+    },
+    drinkPairing: { type: Type.STRING }
+  },
+  required: ["name", "description", "calories", "ingredients", "steps", "prepTime", "cookTime", "difficulty", "servings", "nutrition", "drinkPairing", "cuisine"]
+};
+
 export const generateRecipes = async (ingredients: string[]): Promise<Recipe[]> => {
   if (ingredients.length === 0) return [];
 
-  const model = "gemini-2.5-flash"; // Using Flash for speed as requested
+  // Use gemini-3-flash-preview for general text generation and structured data
+  const model = "gemini-3-flash-preview"; 
   
   const prompt = `
     I have the following ingredients available: ${ingredients.join(", ")}.
@@ -16,19 +62,7 @@ export const generateRecipes = async (ingredients: string[]): Promise<Recipe[]> 
     
     **CRITICAL**: Try to include diverse cuisines, specifically at least one Indian-style recipe (e.g., Curry, Masala, Stir-fry) if the ingredients allow.
     
-    For each recipe, provide:
-    1. A catchy name.
-    2. A short, appetizing description.
-    3. Total calories per serving (e.g., "450 kcal").
-    4. Preparation time and Cooking time (e.g., "15 min").
-    5. Difficulty level (Easy, Medium, Hard).
-    6. Number of servings this recipe yields (default to 2 or 4).
-    7. A detailed list of ingredients with specific measurements (metric or standard).
-    8. Step-by-step cooking instructions.
-    9. A list of tags. CRITICAL: Include ALL applicable dietary tags from this list if the recipe qualifies: "Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free", "Low-Carb", "Healthy". Also include meal types (e.g. "Dinner", "Lunch").
-    10. The primary cuisine type (e.g. "Indian", "Italian", "Chinese", "Mexican", "Asian", "American", "Mediterranean", "Thai", "Japanese", "French").
-    11. Nutritional breakdown per serving: Protein, Carbs, Fat, and Fiber (e.g., "20g").
-    12. A specific beverage pairing recommendation (wine, beer, or non-alcoholic) that complements the dish (max 10 words).
+    For each recipe, provide the requested details in JSON format.
   `;
 
   try {
@@ -36,54 +70,11 @@ export const generateRecipes = async (ingredients: string[]): Promise<Recipe[]> 
       model: model,
       contents: prompt,
       config: {
-        systemInstruction: "You are a world-class chef and nutritionist specializing in global cuisines, especially Indian, Italian, and Asian dishes. Your goal is to create creative, feasible, and healthy recipes based on limited user inputs. Be precise with measurements and nutritional estimates. Ensure dietary tags are accurate.",
+        systemInstruction: "You are a world-class chef and nutritionist specializing in global cuisines. Your goal is to create creative, feasible, and healthy recipes based on limited user inputs. Be precise with measurements and nutritional estimates.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              name: { type: Type.STRING },
-              description: { type: Type.STRING },
-              calories: { type: Type.STRING },
-              prepTime: { type: Type.STRING },
-              cookTime: { type: Type.STRING },
-              difficulty: { type: Type.STRING },
-              cuisine: { type: Type.STRING },
-              servings: { type: Type.INTEGER },
-              ingredients: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    name: { type: Type.STRING },
-                    amount: { type: Type.STRING }
-                  },
-                  required: ["name", "amount"]
-                }
-              },
-              steps: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING }
-              },
-              tags: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING }
-              },
-              nutrition: {
-                type: Type.OBJECT,
-                properties: {
-                  protein: { type: Type.STRING },
-                  carbs: { type: Type.STRING },
-                  fat: { type: Type.STRING },
-                  fiber: { type: Type.STRING }
-                },
-                required: ["protein", "carbs", "fat", "fiber"]
-              },
-              drinkPairing: { type: Type.STRING }
-            },
-            required: ["name", "description", "calories", "ingredients", "steps", "prepTime", "cookTime", "difficulty", "servings", "nutrition", "drinkPairing", "cuisine"]
-          }
+          items: recipeSchema
         }
       }
     });
@@ -95,14 +86,56 @@ export const generateRecipes = async (ingredients: string[]): Promise<Recipe[]> 
 
     const recipes: Omit<Recipe, 'id'>[] = JSON.parse(jsonText);
     
-    // Add IDs for React rendering
     return recipes.map((r, index) => ({
       ...r,
-      id: `recipe-${Date.now()}-${index}`
+      id: `recipe-ing-${Date.now()}-${index}`
     }));
 
   } catch (error) {
     console.error("Error generating recipes:", error);
+    throw error;
+  }
+};
+
+export const generateRecipeByName = async (dishName: string): Promise<Recipe[]> => {
+  if (!dishName.trim()) return [];
+
+  const model = "gemini-3-flash-preview"; 
+  
+  const prompt = `
+    Please provide a highly authentic and detailed recipe for "${dishName}".
+    
+    For this recipe, provide full details as per the required schema.
+  `;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: model,
+      contents: prompt,
+      config: {
+        systemInstruction: "You are an expert chef specializing in global cuisines. Provide a high-quality, professional recipe for the requested dish. Return the result as a JSON array containing exactly one recipe object.",
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: recipeSchema
+        }
+      }
+    });
+
+    const jsonText = response.text;
+    if (!jsonText) {
+      throw new Error("No data returned from AI");
+    }
+
+    const recipes: Omit<Recipe, 'id'>[] = JSON.parse(jsonText);
+    
+    return recipes.map((r, index) => ({
+      ...r,
+      id: `recipe-name-${Date.now()}-${index}`
+    }));
+
+  } catch (error) {
+    console.error("Error generating recipe by name:", error);
     throw error;
   }
 };
