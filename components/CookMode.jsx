@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Recipe, Ingredient } from '../types';
 import { XIcon, PlayIcon, PauseIcon, StopIcon, SpeakerWaveIcon, ChevronRightIcon, ChevronLeftIcon, ClockIcon, CheckCircleIcon, CircleIcon } from './Icons';
 
-interface Props {
-  recipe: Recipe;
-  onClose: () => void;
-}
-
-const extractTimeInSeconds = (text: string): number | null => {
+const extractTimeInSeconds = (text) => {
     const minuteMatch = text.match(/(\d+(?:-\d+)?)\s*(?:min|minute)s?/i);
     if (minuteMatch) {
         let val = minuteMatch[1];
@@ -24,26 +18,21 @@ const extractTimeInSeconds = (text: string): number | null => {
     return null;
 };
 
-const formatTime = (totalSeconds: number) => {
+const formatTime = (totalSeconds) => {
     const m = Math.floor(totalSeconds / 60);
     const s = totalSeconds % 60;
     return `${m}:${s.toString().padStart(2, '0')}`;
 };
 
-const CookMode: React.FC<Props> = ({ recipe, onClose }) => {
+const CookMode = ({ recipe, onClose }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [timer, setTimer] = useState<{
-    duration: number;
-    remaining: number;
-    isRunning: boolean;
-    stepIndex: number;
-  } | null>(null);
+  const [timer, setTimer] = useState(null);
 
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
-  const timerRef = useRef<number | null>(null);
+  const [checkedItems, setCheckedItems] = useState(new Set());
+  const timerRef = useRef(null);
 
   useEffect(() => {
-    let wakeLock: WakeLockSentinel | null = null;
+    let wakeLock = null;
     const requestWakeLock = async () => {
       try {
         if ('wakeLock' in navigator) {
@@ -100,7 +89,7 @@ const CookMode: React.FC<Props> = ({ recipe, onClose }) => {
       return parts.some(part => part.length >= 4 && currentStepText.toLowerCase().includes(part.toLowerCase()));
   });
 
-  const toggleIngredientCheck = (ingredientIndex: number) => {
+  const toggleIngredientCheck = (ingredientIndex) => {
       const key = `${currentStepIndex}-${ingredientIndex}`;
       setCheckedItems(prev => {
           const next = new Set(prev);
