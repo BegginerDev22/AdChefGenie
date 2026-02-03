@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChefHatIcon, PlusIcon, SparklesIcon, XIcon, ClockIcon, HeartIcon, FilterIcon, SunIcon, MoonIcon, ShareIcon, CalendarIcon } from './components/Icons';
-import { Recipe, MealPlan, DayOfWeek, MealType } from './types';
 import { generateRecipes, generateRecipeByName } from './services/geminiService';
 import { FEATURED_RECIPES } from './services/featuredRecipes';
 import RecipeDetailModal from './components/RecipeDetailModal';
@@ -28,11 +27,8 @@ const LOCAL_STORAGE_KEY = 'chefgenie_saved_recipes';
 const MEAL_PLAN_KEY = 'chefgenie_meal_plan';
 const THEME_STORAGE_KEY = 'chefgenie_theme';
 
-type ViewMode = 'generated' | 'saved' | 'planner' | 'about' | 'privacy';
-type Theme = 'light' | 'dark';
-
 // SEO Hard-coded recipes
-const POPULAR_RECIPES: Recipe[] = [
+const POPULAR_RECIPES = [
   {
     id: "popular-1",
     name: "Mediterranean Quinoa Bowl",
@@ -122,13 +118,13 @@ const POPULAR_RECIPES: Recipe[] = [
 
 function App() {
   const [inputVal, setInputVal] = useState('');
-  const [ingredients, setIngredients] = useState<string[]>([]);
-  const [recipes, setRecipes] = useState<Recipe[]>(FEATURED_RECIPES);
+  const [ingredients, setIngredients] = useState([]);
+  const [recipes, setRecipes] = useState(FEATURED_RECIPES);
   const [hasGenerated, setHasGenerated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('generated');
+  const [error, setError] = useState(null);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [viewMode, setViewMode] = useState('generated');
   
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
@@ -143,7 +139,7 @@ function App() {
     };
   }, []);
 
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
       if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
@@ -153,22 +149,22 @@ function App() {
   });
 
   const [showToast, setShowToast] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [activeFilters, setActiveFilters] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef(null);
   
-  const [savedRecipes, setSavedRecipes] = useState<Recipe[]>(() => {
+  const [savedRecipes, setSavedRecipes] = useState(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       const parsed = saved ? JSON.parse(saved) : [];
-      return parsed.map((r: any) => ({ ...r, servings: r.servings || 2 }));
+      return parsed.map((r) => ({ ...r, servings: r.servings || 2 }));
     } catch (e) {
       return [];
     }
   });
 
-  const [mealPlan, setMealPlan] = useState<MealPlan>(() => {
+  const [mealPlan, setMealPlan] = useState(() => {
     try {
         const saved = localStorage.getItem(MEAL_PLAN_KEY);
         return saved ? JSON.parse(saved) : {};
@@ -194,8 +190,8 @@ function App() {
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setShowSuggestions(false);
       }
     }
@@ -203,7 +199,7 @@ function App() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [wrapperRef]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e) => {
     const val = e.target.value;
     setInputVal(val);
 
@@ -229,7 +225,7 @@ function App() {
     }
   };
 
-  const handleAddIngredient = (val: string) => {
+  const handleAddIngredient = (val) => {
     const trimmed = val.trim();
     if (trimmed && !ingredients.includes(trimmed)) {
       setIngredients([...ingredients, trimmed]);
@@ -239,7 +235,7 @@ function App() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       if (showSuggestions && suggestions.length > 0) {
           const exactMatch = suggestions.find(s => s.toLowerCase() === inputVal.trim().toLowerCase());
@@ -252,7 +248,7 @@ function App() {
     }
   };
 
-  const removeIngredient = (ing: string) => setIngredients(ingredients.filter(i => i !== ing));
+  const removeIngredient = (ing) => setIngredients(ingredients.filter(i => i !== ing));
 
   const handleGenerate = async () => {
     if (isOffline) {
@@ -285,7 +281,7 @@ function App() {
     }
   };
 
-  const toggleSaveRecipe = (recipe: Recipe, e?: React.MouseEvent) => {
+  const toggleSaveRecipe = (recipe, e) => {
     if (e) e.stopPropagation();
     const isSaved = savedRecipes.some(r => r.id === recipe.id);
     const newSavedList = isSaved ? savedRecipes.filter(r => r.id !== recipe.id) : [...savedRecipes, recipe];
@@ -293,7 +289,7 @@ function App() {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newSavedList));
   };
 
-  const handleUpdateMealPlan = (day: DayOfWeek, type: MealType, recipe: Recipe | null) => {
+  const handleUpdateMealPlan = (day, type, recipe) => {
       const newPlan = { ...mealPlan };
       if (!newPlan[day]) newPlan[day] = {};
       if (recipe === null) {
@@ -306,14 +302,14 @@ function App() {
       localStorage.setItem(MEAL_PLAN_KEY, JSON.stringify(newPlan));
   };
 
-  const handleCardShare = (recipe: Recipe, e: React.MouseEvent) => {
+  const handleCardShare = (recipe, e) => {
       e.stopPropagation();
       const text = generateShareText(recipe);
       const imageUrl = `https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " recipe dish")}&w=800&h=600&c=7&rs=1&p=0`;
       shareRecipe(text, recipe.name, () => setShowToast(true), imageUrl);
   }
 
-  const toggleFilter = (filter: string) => {
+  const toggleFilter = (filter) => {
     setActiveFilters(prev => prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]);
   };
 
