@@ -293,10 +293,12 @@ function App() {
       const newPlan = { ...mealPlan };
       if (!newPlan[day]) newPlan[day] = {};
       if (recipe === null) {
-          delete newPlan[day]![type];
-          if (Object.keys(newPlan[day]!).length === 0) delete newPlan[day];
-      } else {
-          newPlan[day]![type] = recipe;
+          if (newPlan[day]) {
+            delete newPlan[day][type];
+            if (Object.keys(newPlan[day]).length === 0) delete newPlan[day];
+          }
+      } else if (newPlan[day]) {
+          newPlan[day][type] = recipe;
       }
       setMealPlan(newPlan);
       localStorage.setItem(MEAL_PLAN_KEY, JSON.stringify(newPlan));
