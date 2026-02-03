@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Recipe } from '../types';
 import { XIcon, ClockIcon, FlameIcon, ChefHatIcon, HeartIcon, UsersIcon, PlusIcon, MinusIcon, ShareIcon, CopyIcon, WineIcon, PlayIcon } from './Icons';
 import { scaleAmount, generateShareText, shareRecipe, getCuisineColor } from '../utils';
 import CookMode from './CookMode';
 
-interface Props {
-  recipe: Recipe;
-  isOpen: boolean;
-  onClose: () => void;
-  isSaved: boolean;
-  onToggleSave: () => void;
-  onShowToast: () => void;
-}
-
-const RecipeDetailModal: React.FC<Props> = ({ recipe, isOpen, onClose, isSaved, onToggleSave, onShowToast }) => {
+const RecipeDetailModal = ({ recipe, isOpen, onClose, isSaved, onToggleSave, onShowToast }) => {
   const [currentServings, setCurrentServings] = useState(recipe.servings || 2);
   const [isCookMode, setIsCookMode] = useState(false);
 
@@ -26,7 +16,7 @@ const RecipeDetailModal: React.FC<Props> = ({ recipe, isOpen, onClose, isSaved, 
 
   if (!isOpen) return null;
 
-  const handleServingsChange = (delta: number) => {
+  const handleServingsChange = (delta) => {
     setCurrentServings(prev => Math.max(1, Math.min(20, prev + delta)));
   };
 
