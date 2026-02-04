@@ -426,13 +426,13 @@ function App() {
           <span className="font-medium text-sm">Copied to clipboard!</span>
       </div>
 
-      <nav className={`bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-orange-100 dark:border-gray-800 sticky top-0 z-30 transition-all duration-500 ${isOffline ? 'translate-y-8 border-stone-200 dark:border-stone-800' : 'translate-y-0'}`}>
+      <nav className={`bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-orange-100 dark:border-gray-800 sticky top-0 z-30 transition-all duration-500 ${isOffline ? 'translate-y-8 border-stone-200 dark:border-stone-800' : 'translate-y-0'}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer group" onClick={() => { setViewMode('generated'); setHasGenerated(false); setRecipes(FEATURED_RECIPES); }}>
-            <div className={`p-2 rounded-xl text-white transition-all duration-700 ${isOffline ? 'bg-stone-600 shadow-none' : 'bg-orange-600 shadow-lg shadow-orange-200'}`}>
+            <div className={`p-2 rounded-xl text-white transition-all duration-700 ${isOffline ? 'bg-stone-600 shadow-none' : 'bg-gradient-to-tr from-orange-500 via-amber-500 to-pink-500 shadow-lg shadow-orange-200'}`}>
               <ChefHatIcon className="w-6 h-6" />
             </div>
-            <span className={`text-xl font-black transition-all duration-700 hidden sm:block tracking-tight ${isOffline ? 'text-stone-600' : 'bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600'}`}>
+            <span className={`text-xl font-black transition-all duration-700 hidden sm:block tracking-tight ${isOffline ? 'text-stone-600' : 'text-gradient'}`}>
                 ChefGenie
             </span>
           </div>
@@ -440,11 +440,11 @@ function App() {
              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 transition-colors">
                {theme === 'light' ? <MoonIcon className="w-5 h-5" /> : <SunIcon className="w-5 h-5" />}
              </button>
-             <button onClick={() => setViewMode('saved')} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all duration-300 ${viewMode === 'saved' ? (isOffline ? 'bg-stone-100 text-stone-700' : 'bg-orange-100 text-orange-600') : 'text-gray-400 hover:text-gray-600'}`}>
+             <button onClick={() => setViewMode('saved')} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all duration-300 ${viewMode === 'saved' ? (isOffline ? 'bg-stone-100 text-stone-700' : 'bg-orange-100 text-orange-600') : 'secondary-button text-gray-500 hover:text-gray-700'}`}>
                  <HeartIcon className="w-4 h-4" filled={viewMode === 'saved'} />
                  <span className="hidden sm:inline">Cookbook</span>
              </button>
-             <button onClick={() => setViewMode('planner')} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all duration-300 ${viewMode === 'planner' ? (isOffline ? 'bg-stone-100 text-stone-700' : 'bg-orange-100 text-orange-600') : 'text-gray-400 hover:text-gray-600'}`}>
+             <button onClick={() => setViewMode('planner')} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all duration-300 ${viewMode === 'planner' ? (isOffline ? 'bg-stone-100 text-stone-700' : 'bg-orange-100 text-orange-600') : 'secondary-button text-gray-500 hover:text-gray-700'}`}>
                  <CalendarIcon className="w-4 h-4" />
                  <span className="hidden sm:inline">Meal Plan</span>
              </button>
@@ -460,9 +460,9 @@ function App() {
         {viewMode === 'generated' && (
           <>
             <div className="text-center mb-10 space-y-4">
-              <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
+              <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight">
                 {isOffline ? 'Your ' : 'Find your next '} 
-                <span className={`transition-colors duration-700 ${isOffline ? 'text-stone-600' : 'text-orange-600'}`}>perfect recipe.</span>
+                <span className={`transition-colors duration-700 ${isOffline ? 'text-stone-600' : 'text-gradient'}`}>perfect recipe.</span>
               </h1>
               <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
                 {isOffline ? 'Browse your cookbook and recently viewed recipes while offline.' : 'Input ingredients or search for any dish globally.'}
@@ -478,7 +478,7 @@ function App() {
                   onKeyDown={handleKeyDown}
                   onFocus={() => { if (inputVal.trim().length > 0) setShowSuggestions(true); }}
                   placeholder={isOffline ? "AI search is disabled" : "e.g. Garlic, Paneer, Chicken..."}
-                  className={`w-full px-6 py-4 text-lg rounded-2xl border-2 transition-all duration-300 outline-none ${isOffline ? 'border-stone-100 bg-stone-50 text-stone-400 cursor-not-allowed' : 'border-orange-100 dark:border-gray-700 dark:bg-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-50'}`}
+                  className={`w-full px-6 py-4 text-lg rounded-2xl border-2 transition-all duration-300 outline-none input-field ${isOffline ? 'border-stone-100 bg-stone-50 text-stone-400 cursor-not-allowed' : 'border-orange-100 dark:border-gray-700 dark:bg-gray-900 focus:border-orange-500'}`}
                   disabled={loading || isOffline}
                   autoComplete="off"
                 />
@@ -502,7 +502,7 @@ function App() {
 
               <div className="flex flex-wrap gap-2 mb-8 min-h-[44px] items-center">
                 {ingredients.map((ing) => (
-                  <span key={ing} className={`flex items-center gap-1.5 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm transition-all duration-700 ${isOffline ? 'bg-stone-500' : 'bg-orange-600'}`}>
+                  <span key={ing} className={`flex items-center gap-1.5 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm transition-all duration-700 ${isOffline ? 'bg-stone-500' : 'pill-chip'}`}>
                     {ing} {!isOffline && <button onClick={() => removeIngredient(ing)} className="hover:bg-white/20 rounded-full p-0.5"><XIcon className="w-3.5 h-3.5" /></button>}
                   </span>
                 ))}
@@ -511,7 +511,7 @@ function App() {
               <button
                 onClick={handleGenerate}
                 disabled={loading || isOffline || (ingredients.length === 0 && !inputVal.trim())}
-                className={`w-full py-4.5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all duration-700 ${loading ? 'bg-gray-100 text-gray-400' : isOffline ? 'bg-stone-100 text-stone-400 cursor-not-allowed border-2 border-dashed border-stone-200' : 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-xl hover:shadow-orange-200 hover:-translate-y-1'}`}
+                className={`w-full py-4.5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all duration-700 ${loading ? 'bg-gray-100 text-gray-400' : isOffline ? 'bg-stone-100 text-stone-400 cursor-not-allowed border-2 border-dashed border-stone-200' : 'neon-button text-white hover:-translate-y-1'}`}
               >
                 {loading ? <div className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" /> : isOffline ? 'Reconnect to use AI' : <><SparklesIcon className="w-6 h-6" /> Find Recipes</>}
               </button>
@@ -519,7 +519,7 @@ function App() {
             </div>
 
             {/* SEO Information Section */}
-            <div className="max-w-4xl mx-auto mb-16 p-8 glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div className="max-w-4xl mx-auto mb-16 p-8 glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm glow-card">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">How to Use ChefGenie</h2>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                     ChefGenie is your intelligent kitchen companion designed to combat global food waste. Our advanced AI tool helps you transform leftovers into gourmet meals, ensuring no ingredient goes to waste. By analyzing your available items, we provide tailored culinary solutions that are both sustainable and delicious.
@@ -541,7 +541,7 @@ function App() {
             </div>
 
             <div className="max-w-4xl mx-auto mb-16 grid grid-cols-1 gap-8">
-                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
+                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Featured Recipe Guides</h2>
@@ -571,7 +571,7 @@ function App() {
                     </div>
                 </section>
 
-                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
+                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Kitchen Strategy & Nutrition Tips</h2>
@@ -604,7 +604,7 @@ function App() {
                     </div>
                 </section>
 
-                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
+                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">ChefGenie FAQ</h2>
@@ -643,7 +643,7 @@ function App() {
                         <div 
                             key={recipe.id} 
                             onClick={() => setSelectedRecipe(recipe)}
-                            className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col group"
+                            className="card-surface rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card"
                         >
                             <div className="h-40 overflow-hidden relative">
                                 <img 
