@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChefHatIcon, PlusIcon, SparklesIcon, XIcon, ClockIcon, HeartIcon, FilterIcon, SunIcon, MoonIcon, ShareIcon, CalendarIcon } from './components/Icons';
-import { Recipe, MealPlan, DayOfWeek, MealType } from './types';
 import { generateRecipes, generateRecipeByName } from './services/geminiService';
 import { FEATURED_RECIPES } from './services/featuredRecipes';
 import RecipeDetailModal from './components/RecipeDetailModal';
@@ -28,11 +27,8 @@ const LOCAL_STORAGE_KEY = 'chefgenie_saved_recipes';
 const MEAL_PLAN_KEY = 'chefgenie_meal_plan';
 const THEME_STORAGE_KEY = 'chefgenie_theme';
 
-type ViewMode = 'generated' | 'saved' | 'planner' | 'about' | 'privacy';
-type Theme = 'light' | 'dark';
-
 // SEO Hard-coded recipes
-const POPULAR_RECIPES: Recipe[] = [
+const POPULAR_RECIPES = [
   {
     id: "popular-1",
     name: "Mediterranean Quinoa Bowl",
@@ -122,13 +118,13 @@ const POPULAR_RECIPES: Recipe[] = [
 
 function App() {
   const [inputVal, setInputVal] = useState('');
-  const [ingredients, setIngredients] = useState<string[]>([]);
-  const [recipes, setRecipes] = useState<Recipe[]>(FEATURED_RECIPES);
+  const [ingredients, setIngredients] = useState([]);
+  const [recipes, setRecipes] = useState(FEATURED_RECIPES);
   const [hasGenerated, setHasGenerated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('generated');
+  const [error, setError] = useState(null);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [viewMode, setViewMode] = useState('generated');
   
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
@@ -143,7 +139,7 @@ function App() {
     };
   }, []);
 
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
       if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
@@ -153,22 +149,22 @@ function App() {
   });
 
   const [showToast, setShowToast] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [activeFilters, setActiveFilters] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef(null);
   
-  const [savedRecipes, setSavedRecipes] = useState<Recipe[]>(() => {
+  const [savedRecipes, setSavedRecipes] = useState(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       const parsed = saved ? JSON.parse(saved) : [];
-      return parsed.map((r: any) => ({ ...r, servings: r.servings || 2 }));
+      return parsed.map((r) => ({ ...r, servings: r.servings || 2 }));
     } catch (e) {
       return [];
     }
   });
 
-  const [mealPlan, setMealPlan] = useState<MealPlan>(() => {
+  const [mealPlan, setMealPlan] = useState(() => {
     try {
         const saved = localStorage.getItem(MEAL_PLAN_KEY);
         return saved ? JSON.parse(saved) : {};
@@ -194,8 +190,8 @@ function App() {
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setShowSuggestions(false);
       }
     }
@@ -203,7 +199,7 @@ function App() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [wrapperRef]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e) => {
     const val = e.target.value;
     setInputVal(val);
 
@@ -229,7 +225,7 @@ function App() {
     }
   };
 
-  const handleAddIngredient = (val: string) => {
+  const handleAddIngredient = (val) => {
     const trimmed = val.trim();
     if (trimmed && !ingredients.includes(trimmed)) {
       setIngredients([...ingredients, trimmed]);
@@ -239,7 +235,7 @@ function App() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       if (showSuggestions && suggestions.length > 0) {
           const exactMatch = suggestions.find(s => s.toLowerCase() === inputVal.trim().toLowerCase());
@@ -252,7 +248,7 @@ function App() {
     }
   };
 
-  const removeIngredient = (ing: string) => setIngredients(ingredients.filter(i => i !== ing));
+  const removeIngredient = (ing) => setIngredients(ingredients.filter(i => i !== ing));
 
   const handleGenerate = async () => {
     if (isOffline) {
@@ -285,7 +281,7 @@ function App() {
     }
   };
 
-  const toggleSaveRecipe = (recipe: Recipe, e?: React.MouseEvent) => {
+  const toggleSaveRecipe = (recipe, e) => {
     if (e) e.stopPropagation();
     const isSaved = savedRecipes.some(r => r.id === recipe.id);
     const newSavedList = isSaved ? savedRecipes.filter(r => r.id !== recipe.id) : [...savedRecipes, recipe];
@@ -293,27 +289,29 @@ function App() {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newSavedList));
   };
 
-  const handleUpdateMealPlan = (day: DayOfWeek, type: MealType, recipe: Recipe | null) => {
+  const handleUpdateMealPlan = (day, type, recipe) => {
       const newPlan = { ...mealPlan };
       if (!newPlan[day]) newPlan[day] = {};
       if (recipe === null) {
-          delete newPlan[day]![type];
-          if (Object.keys(newPlan[day]!).length === 0) delete newPlan[day];
-      } else {
-          newPlan[day]![type] = recipe;
+          if (newPlan[day]) {
+            delete newPlan[day][type];
+            if (Object.keys(newPlan[day]).length === 0) delete newPlan[day];
+          }
+      } else if (newPlan[day]) {
+          newPlan[day][type] = recipe;
       }
       setMealPlan(newPlan);
       localStorage.setItem(MEAL_PLAN_KEY, JSON.stringify(newPlan));
   };
 
-  const handleCardShare = (recipe: Recipe, e: React.MouseEvent) => {
+  const handleCardShare = (recipe, e) => {
       e.stopPropagation();
       const text = generateShareText(recipe);
       const imageUrl = `https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " recipe dish")}&w=800&h=600&c=7&rs=1&p=0`;
       shareRecipe(text, recipe.name, () => setShowToast(true), imageUrl);
   }
 
-  const toggleFilter = (filter: string) => {
+  const toggleFilter = (filter) => {
     setActiveFilters(prev => prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]);
   };
 
@@ -401,7 +399,12 @@ function App() {
   );
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-orange-50 to-white dark:from-gray-900 dark:to-gray-950 text-gray-800 dark:text-gray-100 font-sans pb-4 transition-all duration-700 ease-in-out ${isOffline ? 'grayscale-[0.3] sepia-[0.1] contrast-[0.9]' : ''}`}>
+    <div className={`min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-gray-950 dark:via-gray-900 dark:to-slate-950 text-gray-800 dark:text-gray-100 font-sans pb-4 transition-all duration-700 ease-in-out ${isOffline ? 'grayscale-[0.3] sepia-[0.1] contrast-[0.9]' : ''}`}>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="animated-blob blob-1 -top-20 -left-20"></div>
+        <div className="animated-blob blob-2 top-40 right-10"></div>
+        <div className="animated-blob blob-3 bottom-10 left-1/2"></div>
+      </div>
       
       {/* Non-intrusive Offline Status Banner */}
       <div className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 transform ease-in-out ${isOffline ? 'translate-y-0' : '-translate-y-full'}`}>
@@ -430,7 +433,7 @@ function App() {
               <ChefHatIcon className="w-6 h-6" />
             </div>
             <span className={`text-xl font-black transition-all duration-700 hidden sm:block tracking-tight ${isOffline ? 'text-stone-600' : 'bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600'}`}>
-              ChefGenie
+                ChefGenie
             </span>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
@@ -466,7 +469,7 @@ function App() {
               </p>
             </div>
 
-            <div className={`max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 md:p-8 mb-12 border transition-all duration-700 relative overflow-hidden ${isOffline ? 'border-stone-200 shadow-stone-100' : 'border-orange-50 dark:border-gray-700 shadow-orange-100/50'}`}>
+            <div className={`max-w-4xl mx-auto glass-card rounded-3xl shadow-2xl p-6 md:p-8 mb-12 border transition-all duration-700 relative overflow-hidden ${isOffline ? 'border-stone-200 shadow-stone-100' : 'border-orange-100 dark:border-gray-700 shadow-orange-100/50'}`}>
               <div className="relative mb-6" ref={wrapperRef}>
                 <input
                   type="text"
@@ -516,7 +519,7 @@ function App() {
             </div>
 
             {/* SEO Information Section */}
-            <div className="max-w-4xl mx-auto mb-16 p-8 bg-white/50 dark:bg-gray-800/30 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div className="max-w-4xl mx-auto mb-16 p-8 glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">How to Use ChefGenie</h2>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                     ChefGenie is your intelligent kitchen companion designed to combat global food waste. Our advanced AI tool helps you transform leftovers into gourmet meals, ensuring no ingredient goes to waste. By analyzing your available items, we provide tailored culinary solutions that are both sustainable and delicious.
@@ -535,6 +538,98 @@ function App() {
                         <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Get professionally structured recipes in seconds using Google Gemini AI.</p>
                     </div>
                 </div>
+            </div>
+
+            <div className="max-w-4xl mx-auto mb-16 grid grid-cols-1 gap-8">
+                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
+                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Featured Recipe Guides</h2>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+                        Discover curated guides that help you cook smarter, stretch groceries further, and build confidence in the kitchen. Each guide is packed with practical tips, flavor pairings, and step-by-step strategies you can use today.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card">
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Pantry Power Bowl Guide</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Learn how to combine grains, beans, and crisp vegetables into balanced bowls with bold sauces. Includes seasoning ratios and no-waste topping ideas.
+                            </p>
+                        </article>
+                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card">
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Weeknight 20-Minute Dinners</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Quick meal blueprints featuring stir-fries, sheet-pan proteins, and one-pot pastas that keep flavor high and cleanup minimal.
+                            </p>
+                        </article>
+                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card">
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Leftover Makeover Playbook</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Transform roasted veggies, rice, and cooked proteins into fresh wraps, soups, and skillet meals with easy flavor upgrades.
+                            </p>
+                        </article>
+                    </div>
+                </section>
+
+                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
+                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Kitchen Strategy & Nutrition Tips</h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Build a Balanced Plate</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Aim for a mix of protein, fiber-rich carbs, and colorful produce. ChefGenie’s nutrition callouts help you track protein, carbs, fats, and fiber per serving.
+                            </p>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Smart Prep That Saves Time</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Chop vegetables, cook grains, and portion proteins once. Mix and match through the week for salads, wraps, bowls, and quick sautés.
+                            </p>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Flavor Pairing Basics</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Balance acid (citrus, vinegar), fat (olive oil, yogurt), and spice (chili, paprika). This trio makes even simple pantry meals taste restaurant-quality.
+                            </p>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Reduce Food Waste</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Plan meals around ingredients you already own, freeze leftovers in single portions, and prioritize short-shelf-life produce first.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
+                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">ChefGenie FAQ</h2>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">How accurate are the nutrition estimates?</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Nutrition values are AI-assisted estimates based on standard ingredient data and serving sizes. For medical or dietary needs, verify with a trusted nutrition source.
+                            </p>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Can I search by a specific dish?</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Yes. Leave the ingredient list empty, type the dish name, and ChefGenie will generate a detailed recipe with steps, tags, and serving information.
+                            </p>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">What if I am offline?</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                You can still browse your saved cookbook and meal plan. New AI generation requires an internet connection to reach the recipe service.
+                            </p>
+                        </div>
+                    </div>
+                </section>
             </div>
 
             {/* Popular AI Recipes Section (SEO Content) */}

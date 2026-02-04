@@ -1,33 +1,25 @@
 import React, { useState } from 'react';
-import { Recipe, MealPlan, DayOfWeek, MealType } from '../types';
 import { GripIcon, TrashIcon, ClockIcon, FlameIcon, PlusIcon, XIcon } from './Icons';
 
-interface Props {
-  savedRecipes: Recipe[];
-  mealPlan: MealPlan;
-  onUpdatePlan: (day: DayOfWeek, type: MealType, recipe: Recipe | null) => void;
-  onRecipeClick: (recipe: Recipe) => void;
-}
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const MEALS = ['Breakfast', 'Lunch', 'Dinner'];
 
-const DAYS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const MEALS: MealType[] = ['Breakfast', 'Lunch', 'Dinner'];
+const MealPlanner = ({ savedRecipes, mealPlan, onUpdatePlan, onRecipeClick }) => {
+  const [draggedRecipe, setDraggedRecipe] = useState(null);
+  const [activeSlot, setActiveSlot] = useState(null);
 
-const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, onRecipeClick }) => {
-  const [draggedRecipe, setDraggedRecipe] = useState<Recipe | null>(null);
-  const [activeSlot, setActiveSlot] = useState<{day: DayOfWeek, type: MealType} | null>(null);
-
-  const handleDragStart = (e: React.DragEvent, recipe: Recipe) => {
+  const handleDragStart = (e, recipe) => {
     setDraggedRecipe(recipe);
     e.dataTransfer.setData("recipeId", recipe.id);
     e.dataTransfer.effectAllowed = "copy";
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
   };
 
-  const handleDrop = (e: React.DragEvent, day: DayOfWeek, type: MealType) => {
+  const handleDrop = (e, day, type) => {
     e.preventDefault();
     const recipeId = e.dataTransfer.getData("recipeId");
     const recipe = savedRecipes.find(r => r.id === recipeId);
@@ -38,7 +30,7 @@ const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, on
     setDraggedRecipe(null);
   };
 
-  const handleManualSelect = (recipe: Recipe) => {
+  const handleManualSelect = (recipe) => {
       if (activeSlot) {
           onUpdatePlan(activeSlot.day, activeSlot.type, recipe);
           setActiveSlot(null);
