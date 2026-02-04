@@ -404,6 +404,9 @@ function App() {
         <div className="animated-blob blob-1 -top-20 -left-20"></div>
         <div className="animated-blob blob-2 top-40 right-10"></div>
         <div className="animated-blob blob-3 bottom-10 left-1/2"></div>
+        <div className="hero-orb absolute -top-10 right-1/4">
+          <div className="pulse-ring"></div>
+        </div>
       </div>
       
       {/* Non-intrusive Offline Status Banner */}
@@ -469,7 +472,7 @@ function App() {
               </p>
             </div>
 
-            <div className={`max-w-4xl mx-auto glass-card rounded-3xl shadow-2xl p-6 md:p-8 mb-12 border transition-all duration-700 relative overflow-hidden ${isOffline ? 'border-stone-200 shadow-stone-100' : 'border-orange-100 dark:border-gray-700 shadow-orange-100/50'}`}>
+            <div className={`max-w-4xl mx-auto glass-card shimmer-border rounded-3xl shadow-2xl p-6 md:p-8 mb-12 border transition-all duration-700 relative overflow-hidden ${isOffline ? 'border-stone-200 shadow-stone-100' : 'border-orange-100 dark:border-gray-700 shadow-orange-100/50'}`}>
               <div className="relative mb-6" ref={wrapperRef}>
                 <input
                   type="text"
@@ -519,7 +522,7 @@ function App() {
             </div>
 
             {/* SEO Information Section */}
-            <div className="max-w-4xl mx-auto mb-16 p-8 glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm glow-card">
+            <div className="max-w-4xl mx-auto mb-16 p-8 glass-card shimmer-border rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm glow-card card-3d">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">How to Use ChefGenie</h2>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                     ChefGenie is your intelligent kitchen companion designed to combat global food waste. Our advanced AI tool helps you transform leftovers into gourmet meals, ensuring no ingredient goes to waste. By analyzing your available items, we provide tailored culinary solutions that are both sustainable and delicious.
@@ -541,7 +544,7 @@ function App() {
             </div>
 
             <div className="max-w-4xl mx-auto mb-16 grid grid-cols-1 gap-8">
-                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card">
+                <section className="glass-card shimmer-border rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card card-3d">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Featured Recipe Guides</h2>
@@ -550,19 +553,19 @@ function App() {
                         Discover curated guides that help you cook smarter, stretch groceries further, and build confidence in the kitchen. Each guide is packed with practical tips, flavor pairings, and step-by-step strategies you can use today.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card">
+                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card card-3d">
                             <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Pantry Power Bowl Guide</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Learn how to combine grains, beans, and crisp vegetables into balanced bowls with bold sauces. Includes seasoning ratios and no-waste topping ideas.
                             </p>
                         </article>
-                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card">
+                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card card-3d">
                             <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Weeknight 20-Minute Dinners</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Quick meal blueprints featuring stir-fries, sheet-pan proteins, and one-pot pastas that keep flavor high and cleanup minimal.
                             </p>
                         </article>
-                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card">
+                        <article className="rounded-2xl border border-orange-100 dark:border-gray-700 p-5 bg-orange-50/40 dark:bg-gray-900/40 tilt-card card-3d">
                             <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Leftover Makeover Playbook</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Transform roasted veggies, rice, and cooked proteins into fresh wraps, soups, and skillet meals with easy flavor upgrades.
@@ -571,31 +574,31 @@ function App() {
                     </div>
                 </section>
 
-                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card">
+                <section className="glass-card shimmer-border rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card card-3d">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Kitchen Strategy & Nutrition Tips</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card">
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card card-3d">
                             <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Build a Balanced Plate</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Aim for a mix of protein, fiber-rich carbs, and colorful produce. ChefGenie’s nutrition callouts help you track protein, carbs, fats, and fiber per serving.
                             </p>
                         </div>
-                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card">
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card card-3d">
                             <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Smart Prep That Saves Time</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Chop vegetables, cook grains, and portion proteins once. Mix and match through the week for salads, wraps, bowls, and quick sautés.
                             </p>
                         </div>
-                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card">
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card card-3d">
                             <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Flavor Pairing Basics</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Balance acid (citrus, vinegar), fat (olive oil, yogurt), and spice (chili, paprika). This trio makes even simple pantry meals taste restaurant-quality.
                             </p>
                         </div>
-                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card">
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 tilt-card card-3d">
                             <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Reduce Food Waste</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Plan meals around ingredients you already own, freeze leftovers in single portions, and prioritize short-shelf-life produce first.
@@ -604,25 +607,25 @@ function App() {
                     </div>
                 </section>
 
-                <section className="glass-card rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card">
+                <section className="glass-card shimmer-border rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card card-3d">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">ChefGenie FAQ</h2>
                     </div>
                     <div className="space-y-4">
-                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card">
+                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card card-3d">
                             <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">How accurate are the nutrition estimates?</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Nutrition values are AI-assisted estimates based on standard ingredient data and serving sizes. For medical or dietary needs, verify with a trusted nutrition source.
                             </p>
                         </div>
-                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card">
+                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card card-3d">
                             <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">Can I search by a specific dish?</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Yes. Leave the ingredient list empty, type the dish name, and ChefGenie will generate a detailed recipe with steps, tags, and serving information.
                             </p>
                         </div>
-                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card">
+                        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 p-5 bg-gray-50 dark:bg-gray-900/40 tilt-card card-3d">
                             <h3 className="text-base font-black text-gray-900 dark:text-white mb-2">What if I am offline?</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 You can still browse your saved cookbook and meal plan. New AI generation requires an internet connection to reach the recipe service.
@@ -643,7 +646,7 @@ function App() {
                         <div 
                             key={recipe.id} 
                             onClick={() => setSelectedRecipe(recipe)}
-                            className="card-surface rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card"
+                            className="card-surface rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card card-3d shimmer-border"
                         >
                             <div className="h-40 overflow-hidden relative">
                                 <img 

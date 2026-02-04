@@ -137,6 +137,47 @@
         background: rgba(15, 23, 42, 0.85);
         border-color: rgba(148, 163, 184, 0.2);
       }
+      .card-3d {
+        transform-style: preserve-3d;
+        perspective: 1200px;
+      }
+      .card-3d .card-layer {
+        transform: translateZ(30px);
+      }
+      .card-3d:hover {
+        transform: rotateX(2deg) rotateY(-3deg) translateY(-4px);
+      }
+      .shimmer-border {
+        position: relative;
+        overflow: hidden;
+      }
+      .shimmer-border::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(120deg, rgba(249,115,22,0.4), rgba(236,72,153,0.35), rgba(139,92,246,0.35));
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.7;
+      }
+      .hero-orb {
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(56,189,248,0.45), rgba(139,92,246,0.2), transparent 70%);
+        filter: blur(6px);
+        animation: orbPulse 10s ease-in-out infinite;
+      }
+      .pulse-ring {
+        position: absolute;
+        inset: -20px;
+        border-radius: inherit;
+        border: 1px solid rgba(249,115,22,0.2);
+        animation: ringPulse 4s ease-in-out infinite;
+      }
       @keyframes gradientShift {
         0%, 100% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
@@ -149,6 +190,14 @@
       @keyframes floatSlow {
         0%, 100% { transform: translateY(0px); }
         50% { transform: translateY(-10px); }
+      }
+      @keyframes orbPulse {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+        50% { transform: translateY(-14px) scale(1.05); opacity: 1; }
+      }
+      @keyframes ringPulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.08); opacity: 0.9; }
       }
       /* Custom scrollbar for better aesthetics */
       ::-webkit-scrollbar {
