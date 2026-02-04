@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Recipe, Ingredient } from '../types';
 import { XIcon, PlayIcon, PauseIcon, StopIcon, SpeakerWaveIcon, ChevronRightIcon, ChevronLeftIcon, ClockIcon, CheckCircleIcon, CircleIcon } from './Icons';
 
-interface Props {
-  recipe: Recipe;
-  onClose: () => void;
-}
-
-const extractTimeInSeconds = (text: string): number | null => {
+const extractTimeInSeconds = (text) => {
     const minuteMatch = text.match(/(\d+(?:-\d+)?)\s*(?:min|minute)s?/i);
     if (minuteMatch) {
         let val = minuteMatch[1];
@@ -24,26 +18,21 @@ const extractTimeInSeconds = (text: string): number | null => {
     return null;
 };
 
-const formatTime = (totalSeconds: number) => {
+const formatTime = (totalSeconds) => {
     const m = Math.floor(totalSeconds / 60);
     const s = totalSeconds % 60;
     return `${m}:${s.toString().padStart(2, '0')}`;
 };
 
-const CookMode: React.FC<Props> = ({ recipe, onClose }) => {
+const CookMode = ({ recipe, onClose }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [timer, setTimer] = useState<{
-    duration: number;
-    remaining: number;
-    isRunning: boolean;
-    stepIndex: number;
-  } | null>(null);
+  const [timer, setTimer] = useState(null);
 
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
-  const timerRef = useRef<number | null>(null);
+  const [checkedItems, setCheckedItems] = useState(new Set());
+  const timerRef = useRef(null);
 
   useEffect(() => {
-    let wakeLock: WakeLockSentinel | null = null;
+    let wakeLock = null;
     const requestWakeLock = async () => {
       try {
         if ('wakeLock' in navigator) {
@@ -100,7 +89,7 @@ const CookMode: React.FC<Props> = ({ recipe, onClose }) => {
       return parts.some(part => part.length >= 4 && currentStepText.toLowerCase().includes(part.toLowerCase()));
   });
 
-  const toggleIngredientCheck = (ingredientIndex: number) => {
+  const toggleIngredientCheck = (ingredientIndex) => {
       const key = `${currentStepIndex}-${ingredientIndex}`;
       setCheckedItems(prev => {
           const next = new Set(prev);
@@ -136,9 +125,9 @@ const CookMode: React.FC<Props> = ({ recipe, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[60] bg-white dark:bg-gray-950 flex flex-col animate-[fadeIn_0.3s_ease-out]">
-      <div className="flex flex-col border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 pb-2">
-          <div className="flex items-center justify-between p-4">
-            <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors">
+      <div className="flex flex-col border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 pb-2 glass-card shimmer-border">
+        <div className="flex items-center justify-between p-4">
+            <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors tilt-card">
                 <XIcon className="w-6 h-6" />
             </button>
             <div className="flex-1 px-4 text-center">
@@ -150,7 +139,7 @@ const CookMode: React.FC<Props> = ({ recipe, onClose }) => {
           </div>
           <div className="flex gap-1 px-4 w-full h-1.5">
               {recipe.steps.map((_, idx) => (
-                  <div key={idx} className={`rounded-full flex-1 transition-all duration-300 relative ${idx === currentStepIndex ? 'bg-orange-500' : idx < currentStepIndex ? 'bg-orange-200 dark:bg-orange-900' : 'bg-gray-100 dark:bg-gray-800'}`}>
+                  <div key={idx} className={`rounded-full flex-1 transition-all duration-300 relative ${idx === currentStepIndex ? 'bg-orange-500' : idx < currentStepIndex ? 'bg-orange-200 dark:bg-orange-900' : 'bg-gray-100 dark:bg-gray-800'} shimmer-border`}>
                       {timer?.stepIndex === idx && (
                           <div className={`absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-white dark:border-gray-950 ${timer.remaining === 0 ? 'bg-green-500' : 'bg-orange-600 animate-pulse'}`} />
                       )}
@@ -161,7 +150,7 @@ const CookMode: React.FC<Props> = ({ recipe, onClose }) => {
 
       <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-10 relative overflow-y-auto custom-scrollbar">
           <div className="max-w-3xl w-full text-center space-y-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 dark:bg-gray-800 text-orange-600 dark:text-orange-500 font-bold text-2xl mb-4 shadow-sm">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 dark:bg-gray-800 text-orange-600 dark:text-orange-500 font-bold text-2xl mb-4 shadow-sm tilt-card">
                   {currentStepIndex + 1}
               </div>
 
@@ -170,7 +159,7 @@ const CookMode: React.FC<Props> = ({ recipe, onClose }) => {
               </p>
 
               {stepIngredients.length > 0 && (
-                  <div className="bg-orange-50 dark:bg-gray-900/50 rounded-2xl p-4 sm:p-6 text-left max-w-lg mx-auto border border-orange-100 dark:border-gray-800 shadow-sm">
+                  <div className="bg-orange-50 dark:bg-gray-900/50 rounded-2xl p-4 sm:p-6 text-left max-w-lg mx-auto border border-orange-100 dark:border-gray-800 shadow-sm shimmer-border">
                       <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center justify-between">
                           <span className="flex items-center gap-2">
                              <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>

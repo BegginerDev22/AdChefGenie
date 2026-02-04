@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Recipe } from '../types';
 import { XIcon, ClockIcon, FlameIcon, ChefHatIcon, HeartIcon, UsersIcon, PlusIcon, MinusIcon, ShareIcon, CopyIcon, WineIcon, PlayIcon } from './Icons';
 import { scaleAmount, generateShareText, shareRecipe, getCuisineColor } from '../utils';
 import CookMode from './CookMode';
 
-interface Props {
-  recipe: Recipe;
-  isOpen: boolean;
-  onClose: () => void;
-  isSaved: boolean;
-  onToggleSave: () => void;
-  onShowToast: () => void;
-}
-
-const RecipeDetailModal: React.FC<Props> = ({ recipe, isOpen, onClose, isSaved, onToggleSave, onShowToast }) => {
+const RecipeDetailModal = ({ recipe, isOpen, onClose, isSaved, onToggleSave, onShowToast }) => {
   const [currentServings, setCurrentServings] = useState(recipe.servings || 2);
   const [isCookMode, setIsCookMode] = useState(false);
 
@@ -26,7 +16,7 @@ const RecipeDetailModal: React.FC<Props> = ({ recipe, isOpen, onClose, isSaved, 
 
   if (!isOpen) return null;
 
-  const handleServingsChange = (delta: number) => {
+  const handleServingsChange = (delta) => {
     setCurrentServings(prev => Math.max(1, Math.min(20, prev + delta)));
   };
 
@@ -64,9 +54,9 @@ const RecipeDetailModal: React.FC<Props> = ({ recipe, isOpen, onClose, isSaved, 
         onClick={onClose}
       />
       
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col transform transition-all animate-[fadeIn_0.2s_ease-out]">
+      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col transform transition-all animate-[fadeIn_0.2s_ease-out] shimmer-border card-3d">
         
-        <div className="relative h-48 sm:h-64 bg-orange-100 dark:bg-gray-800 flex-shrink-0">
+        <div className="relative h-48 sm:h-64 bg-orange-100 dark:bg-gray-800 flex-shrink-0 card-3d">
           <img 
             src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " recipe meal")}&w=1200&h=600&c=7&rs=1&p=0`}
             alt={recipe.name} 
@@ -87,21 +77,21 @@ const RecipeDetailModal: React.FC<Props> = ({ recipe, isOpen, onClose, isSaved, 
           <div className="absolute top-4 right-4 flex gap-2">
             <button 
                 onClick={handleShare}
-                className="bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 p-2 rounded-full shadow-md transition-colors group"
+                className="bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 p-2 rounded-full shadow-md transition-colors group tilt-card"
                 title="Share Recipe"
             >
                 <ShareIcon className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-orange-600 dark:group-hover:text-orange-400" />
             </button>
             <button 
                 onClick={onToggleSave}
-                className="bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 p-2 rounded-full shadow-md transition-colors group"
+                className="bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 p-2 rounded-full shadow-md transition-colors group tilt-card"
                 title={isSaved ? "Remove from cookbook" : "Save to cookbook"}
             >
                 <HeartIcon className={`w-5 h-5 transition-colors ${isSaved ? "text-red-500" : "text-gray-500 dark:text-gray-400 group-hover:text-red-500"}`} filled={isSaved} />
             </button>
             <button 
                 onClick={onClose}
-                className="bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 p-2 rounded-full shadow-md transition-colors"
+                className="bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 p-2 rounded-full shadow-md transition-colors tilt-card"
             >
                 <XIcon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
             </button>
@@ -120,7 +110,7 @@ const RecipeDetailModal: React.FC<Props> = ({ recipe, isOpen, onClose, isSaved, 
           
            <button 
                 onClick={() => setIsCookMode(true)}
-                className="absolute -bottom-6 right-6 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-orange-500/30 flex items-center gap-2 font-bold transition-all transform hover:scale-105 active:scale-95 group"
+                className="absolute -bottom-6 right-6 neon-button text-white px-6 py-3 rounded-full shadow-lg hover:shadow-orange-500/30 flex items-center gap-2 font-bold transition-all transform hover:scale-105 active:scale-95 group"
             >
                 <PlayIcon className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
                 Start Cooking

@@ -1,33 +1,25 @@
 import React, { useState } from 'react';
-import { Recipe, MealPlan, DayOfWeek, MealType } from '../types';
 import { GripIcon, TrashIcon, ClockIcon, FlameIcon, PlusIcon, XIcon } from './Icons';
 
-interface Props {
-  savedRecipes: Recipe[];
-  mealPlan: MealPlan;
-  onUpdatePlan: (day: DayOfWeek, type: MealType, recipe: Recipe | null) => void;
-  onRecipeClick: (recipe: Recipe) => void;
-}
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const MEALS = ['Breakfast', 'Lunch', 'Dinner'];
 
-const DAYS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const MEALS: MealType[] = ['Breakfast', 'Lunch', 'Dinner'];
+const MealPlanner = ({ savedRecipes, mealPlan, onUpdatePlan, onRecipeClick }) => {
+  const [draggedRecipe, setDraggedRecipe] = useState(null);
+  const [activeSlot, setActiveSlot] = useState(null);
 
-const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, onRecipeClick }) => {
-  const [draggedRecipe, setDraggedRecipe] = useState<Recipe | null>(null);
-  const [activeSlot, setActiveSlot] = useState<{day: DayOfWeek, type: MealType} | null>(null);
-
-  const handleDragStart = (e: React.DragEvent, recipe: Recipe) => {
+  const handleDragStart = (e, recipe) => {
     setDraggedRecipe(recipe);
     e.dataTransfer.setData("recipeId", recipe.id);
     e.dataTransfer.effectAllowed = "copy";
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
   };
 
-  const handleDrop = (e: React.DragEvent, day: DayOfWeek, type: MealType) => {
+  const handleDrop = (e, day, type) => {
     e.preventDefault();
     const recipeId = e.dataTransfer.getData("recipeId");
     const recipe = savedRecipes.find(r => r.id === recipeId);
@@ -38,7 +30,7 @@ const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, on
     setDraggedRecipe(null);
   };
 
-  const handleManualSelect = (recipe: Recipe) => {
+  const handleManualSelect = (recipe) => {
       if (activeSlot) {
           onUpdatePlan(activeSlot.day, activeSlot.type, recipe);
           setActiveSlot(null);
@@ -50,7 +42,7 @@ const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, on
       
       {/* Sidebar: Saved Recipes */}
       <div className="lg:w-1/4 w-full flex-shrink-0">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-orange-100 dark:border-gray-700 p-4 sticky top-24 max-h-[calc(100vh-8rem)] flex flex-col">
+        <div className="glass-card shimmer-border rounded-xl shadow-sm border border-orange-100 dark:border-gray-700 p-4 sticky top-24 max-h-[calc(100vh-8rem)] flex flex-col">
           <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
             <span className="w-1.5 h-6 bg-orange-500 rounded-full"></span>
             Drag Recipes
@@ -67,7 +59,7 @@ const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, on
                         key={recipe.id}
                         draggable
                         onDragStart={(e) => handleDragStart(e, recipe)}
-                        className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-100 dark:border-gray-600 cursor-grab active:cursor-grabbing hover:border-orange-300 dark:hover:border-orange-500 hover:shadow-md transition-all group"
+                        className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-100 dark:border-gray-600 cursor-grab active:cursor-grabbing hover:border-orange-300 dark:hover:border-orange-500 hover:shadow-md transition-all group tilt-card"
                     >
                         <div className="flex items-start gap-2">
                             <GripIcon className="w-5 h-5 text-gray-300 dark:text-gray-500 mt-0.5 flex-shrink-0" />
@@ -88,7 +80,7 @@ const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, on
 
       {/* Main: Calendar Grid */}
       <div className="flex-1 min-w-0">
-         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+         <div className="glass-card shimmer-border rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
              {/* Desktop Header */}
              <div className="hidden lg:grid grid-cols-7 bg-orange-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                  {DAYS.map(day => (
@@ -123,7 +115,7 @@ const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, on
                                          </div>
                                          
                                          {recipe ? (
-                                             <div className="flex-1 bg-white dark:bg-gray-700 rounded-lg p-2 shadow-sm border border-orange-100 dark:border-gray-600 group relative">
+                                             <div className="flex-1 bg-white dark:bg-gray-700 rounded-lg p-2 shadow-sm border border-orange-100 dark:border-gray-600 group relative tilt-card">
                                                  <div onClick={() => onRecipeClick(recipe)} className="cursor-pointer">
                                                     <p className="font-semibold text-xs text-gray-800 dark:text-gray-100 line-clamp-2 leading-tight mb-1">
                                                         {recipe.name}
@@ -148,7 +140,7 @@ const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, on
                                                  </button>
                                              </div>
                                          ) : (
-                                             <div className="flex-1 border-2 border-dashed border-gray-100 dark:border-gray-700 rounded-lg flex items-center justify-center group-hover:border-orange-200 dark:group-hover:border-gray-500 transition-colors">
+                                             <div className="flex-1 border-2 border-dashed border-gray-100 dark:border-gray-700 rounded-lg flex items-center justify-center group-hover:border-orange-200 dark:group-hover:border-gray-500 transition-colors card-3d">
                                                  <button 
                                                     onClick={() => setActiveSlot({ day, type: mealType })}
                                                     className="w-full h-full flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-orange-500 dark:hover:text-orange-400"
@@ -171,12 +163,12 @@ const MealPlanner: React.FC<Props> = ({ savedRecipes, mealPlan, onUpdatePlan, on
       {activeSlot && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
               <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setActiveSlot(null)} />
-              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-sm max-h-[80vh] flex flex-col relative animate-[fadeIn_0.2s_ease-out]">
+              <div className="glass-card shimmer-border rounded-xl shadow-2xl w-full max-w-sm max-h-[80vh] flex flex-col relative animate-[fadeIn_0.2s_ease-out]">
                   <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                       <h3 className="font-bold text-gray-900 dark:text-white">
                           Select for {activeSlot.day} {activeSlot.type}
                       </h3>
-                      <button onClick={() => setActiveSlot(null)} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
+                      <button onClick={() => setActiveSlot(null)} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full tilt-card">
                           <XIcon className="w-5 h-5" />
                       </button>
                   </div>
