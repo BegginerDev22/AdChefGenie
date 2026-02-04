@@ -10,6 +10,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChefGenie - AI Recipe Generator</title>
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1391384077465686"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -21,6 +26,109 @@
       body {
         font-family: 'Inter', sans-serif;
         /* background-color handled by React App wrapper for dark mode support */
+      }
+      .animated-blob {
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        filter: blur(40px);
+        opacity: 0.5;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 30% 30%, #fb923c, #f97316, #ec4899);
+        animation: blobFloat 18s ease-in-out infinite;
+      }
+      .animated-blob.blob-2 {
+        width: 360px;
+        height: 360px;
+        background: radial-gradient(circle at 70% 30%, #38bdf8, #22c55e, #a855f7);
+        animation-delay: -6s;
+      }
+      .animated-blob.blob-3 {
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle at 40% 70%, #fde047, #fb7185, #a855f7);
+        animation-delay: -12s;
+      }
+      .glass-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+        border: 1px solid rgba(255,255,255,0.4);
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+        backdrop-filter: blur(18px);
+      }
+      .dark .glass-card {
+        background: linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.6));
+        border: 1px solid rgba(148,163,184,0.2);
+        box-shadow: 0 20px 50px rgba(2, 6, 23, 0.5);
+      }
+      .float-slow {
+        animation: floatSlow 6s ease-in-out infinite;
+      }
+      .float-medium {
+        animation: floatSlow 4.8s ease-in-out infinite;
+      }
+      .float-fast {
+        animation: floatSlow 3.8s ease-in-out infinite;
+      }
+      .tilt-card {
+        transform-style: preserve-3d;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+      }
+      .tilt-card:hover {
+        transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+      }
+      .neon-button {
+        background: linear-gradient(120deg, #f97316, #ec4899, #8b5cf6);
+        background-size: 200% 200%;
+        animation: gradientShift 6s ease infinite;
+        box-shadow: 0 18px 40px rgba(249, 115, 22, 0.35);
+      }
+      .neon-button:hover {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 24px 60px rgba(249, 115, 22, 0.45);
+      }
+      .secondary-button {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+      }
+      .dark .secondary-button {
+        background: rgba(15, 23, 42, 0.7);
+        border-color: rgba(148, 163, 184, 0.2);
+      }
+      .glow-card {
+        position: relative;
+        overflow: hidden;
+      }
+      .glow-card::before {
+        content: '';
+        position: absolute;
+        inset: -40%;
+        background: radial-gradient(circle at 30% 30%, rgba(249, 115, 22, 0.25), transparent 60%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .glow-card:hover::before {
+        opacity: 1;
+      }
+      .text-gradient {
+        background: linear-gradient(120deg, #f97316, #ec4899, #8b5cf6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+      @keyframes blobFloat {
+        0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+        30% { transform: translate3d(40px, -30px, 0) scale(1.05); }
+        60% { transform: translate3d(-30px, 20px, 0) scale(0.95); }
+      }
+      @keyframes floatSlow {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
       }
       /* Custom scrollbar for better aesthetics */
       ::-webkit-scrollbar {
@@ -54,6 +162,6 @@
 </head>
   <body>
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+  <script type="module" src="/index.jsx"></script>
 </body>
 </html>

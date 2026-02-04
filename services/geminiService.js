@@ -1,5 +1,4 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { Recipe } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -48,7 +47,7 @@ const recipeSchema = {
   required: ["name", "description", "calories", "ingredients", "steps", "prepTime", "cookTime", "difficulty", "servings", "nutrition", "drinkPairing", "cuisine"]
 };
 
-export const generateRecipes = async (ingredients: string[]): Promise<Recipe[]> => {
+export const generateRecipes = async (ingredients) => {
   if (ingredients.length === 0) return [];
 
   // Use gemini-3-flash-preview for general text generation and structured data
@@ -84,7 +83,7 @@ export const generateRecipes = async (ingredients: string[]): Promise<Recipe[]> 
       throw new Error("No data returned from AI");
     }
 
-    const recipes: Omit<Recipe, 'id'>[] = JSON.parse(jsonText);
+    const recipes = JSON.parse(jsonText);
     
     return recipes.map((r, index) => ({
       ...r,
@@ -97,7 +96,7 @@ export const generateRecipes = async (ingredients: string[]): Promise<Recipe[]> 
   }
 };
 
-export const generateRecipeByName = async (dishName: string): Promise<Recipe[]> => {
+export const generateRecipeByName = async (dishName) => {
   if (!dishName.trim()) return [];
 
   const model = "gemini-3-flash-preview"; 
@@ -127,7 +126,7 @@ export const generateRecipeByName = async (dishName: string): Promise<Recipe[]> 
       throw new Error("No data returned from AI");
     }
 
-    const recipes: Omit<Recipe, 'id'>[] = JSON.parse(jsonText);
+    const recipes = JSON.parse(jsonText);
     
     return recipes.map((r, index) => ({
       ...r,

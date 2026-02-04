@@ -1,6 +1,4 @@
-import { Recipe } from "../types";
-
-export const FEATURED_RECIPES: Recipe[] = [
+export const FEATURED_RECIPES = [
   {
     id: "featured-1",
     name: "Classic Paneer Butter Masala",
