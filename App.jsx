@@ -328,31 +328,6 @@ function App() {
   const displayRecipes = getDisplayRecipes();
   const sourceHasRecipes = (viewMode === 'generated' ? recipes : savedRecipes).length > 0;
 
-  const handleCardPointerMove = (event, cardId) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left;
-    const offsetY = event.clientY - rect.top;
-    const rotateY = ((offsetX / rect.width) - 0.5) * 14;
-    const rotateX = (0.5 - (offsetY / rect.height)) * 12;
-
-    setCardTilt((prev) => ({
-      ...prev,
-      [cardId]: {
-        transform: `perspective(1400px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-10px)`,
-        glare: `${(offsetX / rect.width) * 100}% ${(offsetY / rect.height) * 100}%`
-      }
-    }));
-  };
-
-  const handleCardPointerLeave = (cardId) => {
-    setCardTilt((prev) => ({
-      ...prev,
-      [cardId]: {
-        transform: 'perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0px)',
-        glare: '50% 50%'
-      }
-    }));
-  };
 
   // Static Pages Content
   const AboutPage = () => (
@@ -570,13 +545,15 @@ function App() {
               <button
                 onClick={handleGenerate}
                 disabled={loading || isOffline || (ingredients.length === 0 && !inputVal.trim())}
-                className={`w-full py-4.5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all duration-700 ${loading ? 'bg-gray-100 text-gray-400' : isOffline ? 'bg-stone-100 text-stone-400 cursor-not-allowed border-2 border-dashed border-stone-200' : 'neon-button text-white hover:-translate-y-1'}`}
+                className={`w-full py-4.5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all duration-700 find-recipe-btn ${loading ? 'bg-gray-100 text-gray-400 shadow-none' : isOffline ? 'bg-stone-100 text-stone-400 cursor-not-allowed border-2 border-dashed border-stone-200 shadow-none' : 'text-white hover:-translate-y-1 hover:scale-[1.01]'}`}
               >
                 {loading ? <div className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" /> : isOffline ? 'Reconnect to use AI' : <><SparklesIcon className="w-6 h-6" /> Find Recipes</>}
               </button>
               {error && <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-xl text-center text-xs font-bold border border-red-100">{error}</div>}
             </div>
 
+
+            {!hasGenerated && (<>
             {/* SEO Information Section */}
             <div className="max-w-5xl mx-auto mb-16 p-8 glass-card shimmer-border rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm glow-card card-3d">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">How to Use ChefGenie</h2>
@@ -702,10 +679,7 @@ function App() {
                         <div 
                             key={recipe.id} 
                             onClick={() => setSelectedRecipe(recipe)}
-                            onMouseMove={(event) => handleCardPointerMove(event, recipe.id)}
-                            onMouseLeave={() => handleCardPointerLeave(recipe.id)}
                             className="card-surface premium-card rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card card-3d shimmer-border"
-                            style={{ transform: cardTilt[recipe.id]?.transform }}
                         >
                             <div className="card-glare" style={{ '--glare-position': cardTilt[recipe.id]?.glare || '50% 50%' }}></div>
                             <div className="h-40 overflow-hidden relative">
@@ -728,6 +702,8 @@ function App() {
                     ))}
                 </div>
             </div>
+
+            </>)}
 
             {(sourceHasRecipes) && (
                 <div className="max-w-5xl mx-auto mb-10">
@@ -754,12 +730,8 @@ function App() {
                         <div
                             key={recipe.id}
                             onClick={() => setSelectedRecipe(recipe)}
-                            onMouseMove={(event) => handleCardPointerMove(event, recipe.id)}
-                            onMouseLeave={() => handleCardPointerLeave(recipe.id)}
                             className={`group premium-card relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer ${isOffline ? 'border-stone-100 shadow-sm' : 'border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2'}`}
-                            style={{ transform: cardTilt[recipe.id]?.transform }}
                         >
-                            <div className="card-glare" style={{ '--glare-position': cardTilt[recipe.id]?.glare || '50% 50%' }}></div>
                             <div className="h-56 overflow-hidden relative">
                                 <img src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " meal")}&w=800&h=600&c=7&rs=1&p=0`} alt={recipe.name} className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ${isOffline ? 'saturate-[0.15] brightness-[0.95]' : ''}`} loading="lazy" />
                                 {recipe.cuisine && <div className="absolute top-4 left-4 z-10"><span className={`px-3 py-1 rounded-lg text-[9px] font-black text-white shadow-lg border border-white/20 uppercase tracking-widest ${isOffline ? 'bg-stone-600' : cuisineColor}`}>🌍 {recipe.cuisine}</span></div>}
@@ -802,12 +774,8 @@ function App() {
                              <div
                                 key={recipe.id}
                                 onClick={() => setSelectedRecipe(recipe)}
-                                onMouseMove={(event) => handleCardPointerMove(event, recipe.id)}
-                                onMouseLeave={() => handleCardPointerLeave(recipe.id)}
                                 className={`group premium-card relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2`}
-                                style={{ transform: cardTilt[recipe.id]?.transform }}
                              >
-                                <div className="card-glare" style={{ '--glare-position': cardTilt[recipe.id]?.glare || '50% 50%' }}></div>
                                 <div className="h-56 overflow-hidden relative">
                                     <img src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " meal")}&w=800&h=600&c=7&rs=1&p=0`} alt={recipe.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" loading="lazy" />
                                     <div className="absolute bottom-4 right-4 flex gap-2">
