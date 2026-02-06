@@ -54,7 +54,7 @@ const RecipeDetailModal = ({ recipe, isOpen, onClose, isSaved, onToggleSave, onS
         onClick={onClose}
       />
       
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col transform transition-all animate-[fadeIn_0.2s_ease-out] shimmer-border card-3d">
+      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col min-h-0 transform transition-all animate-[fadeIn_0.2s_ease-out] shimmer-border card-3d">
         
         <div className="relative h-48 sm:h-64 bg-orange-100 dark:bg-gray-800 flex-shrink-0 card-3d">
           <img 
