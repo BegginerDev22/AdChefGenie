@@ -150,6 +150,7 @@ function App() {
 
   const [showToast, setShowToast] = useState(false);
   const [activeFilters, setActiveFilters] = useState([]);
+  const [cardTilt, setCardTilt] = useState({});
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
@@ -680,6 +681,7 @@ function App() {
                             onClick={() => setSelectedRecipe(recipe)}
                             className="card-surface premium-card rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card card-3d shimmer-border"
                         >
+                            <div className="card-glare" style={{ '--glare-position': cardTilt[recipe.id]?.glare || '50% 50%' }}></div>
                             <div className="h-40 overflow-hidden relative">
                                 <img 
                                     src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " dish")}&w=400&h=300&c=7&rs=1&p=0`} 
