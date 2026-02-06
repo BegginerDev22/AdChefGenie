@@ -150,6 +150,7 @@ function App() {
 
   const [showToast, setShowToast] = useState(false);
   const [activeFilters, setActiveFilters] = useState([]);
+  const [cardTilt, setCardTilt] = useState({});
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
@@ -326,6 +327,32 @@ function App() {
 
   const displayRecipes = getDisplayRecipes();
   const sourceHasRecipes = (viewMode === 'generated' ? recipes : savedRecipes).length > 0;
+
+  const handleCardPointerMove = (event, cardId) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+    const rotateY = ((offsetX / rect.width) - 0.5) * 14;
+    const rotateX = (0.5 - (offsetY / rect.height)) * 12;
+
+    setCardTilt((prev) => ({
+      ...prev,
+      [cardId]: {
+        transform: `perspective(1400px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-10px)`,
+        glare: `${(offsetX / rect.width) * 100}% ${(offsetY / rect.height) * 100}%`
+      }
+    }));
+  };
+
+  const handleCardPointerLeave = (cardId) => {
+    setCardTilt((prev) => ({
+      ...prev,
+      [cardId]: {
+        transform: 'perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0px)',
+        glare: '50% 50%'
+      }
+    }));
+  };
 
   // Static Pages Content
   const AboutPage = () => (
@@ -646,8 +673,12 @@ function App() {
                         <div 
                             key={recipe.id} 
                             onClick={() => setSelectedRecipe(recipe)}
-                            className="card-surface rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card card-3d shimmer-border"
+                            onMouseMove={(event) => handleCardPointerMove(event, recipe.id)}
+                            onMouseLeave={() => handleCardPointerLeave(recipe.id)}
+                            className="card-surface premium-card rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card card-3d shimmer-border"
+                            style={{ transform: cardTilt[recipe.id]?.transform }}
                         >
+                            <div className="card-glare" style={{ '--glare-position': cardTilt[recipe.id]?.glare || '50% 50%' }}></div>
                             <div className="h-40 overflow-hidden relative">
                                 <img 
                                     src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " dish")}&w=400&h=300&c=7&rs=1&p=0`} 
@@ -691,7 +722,15 @@ function App() {
                     const isSaved = savedRecipes.some(r => r.id === recipe.id);
                     const cuisineColor = getCuisineColor(recipe.cuisine);
                     return (
-                        <div key={recipe.id} onClick={() => setSelectedRecipe(recipe)} className={`group relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer ${isOffline ? 'border-stone-100 shadow-sm' : 'border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2'}`}>
+                        <div
+                            key={recipe.id}
+                            onClick={() => setSelectedRecipe(recipe)}
+                            onMouseMove={(event) => handleCardPointerMove(event, recipe.id)}
+                            onMouseLeave={() => handleCardPointerLeave(recipe.id)}
+                            className={`group premium-card relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer ${isOffline ? 'border-stone-100 shadow-sm' : 'border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2'}`}
+                            style={{ transform: cardTilt[recipe.id]?.transform }}
+                        >
+                            <div className="card-glare" style={{ '--glare-position': cardTilt[recipe.id]?.glare || '50% 50%' }}></div>
                             <div className="h-56 overflow-hidden relative">
                                 <img src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " meal")}&w=800&h=600&c=7&rs=1&p=0`} alt={recipe.name} className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ${isOffline ? 'saturate-[0.15] brightness-[0.95]' : ''}`} loading="lazy" />
                                 {recipe.cuisine && <div className="absolute top-4 left-4 z-10"><span className={`px-3 py-1 rounded-lg text-[9px] font-black text-white shadow-lg border border-white/20 uppercase tracking-widest ${isOffline ? 'bg-stone-600' : cuisineColor}`}>🌍 {recipe.cuisine}</span></div>}
@@ -731,7 +770,15 @@ function App() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pb-20">
                         {displayRecipes.map((recipe) => (
-                             <div key={recipe.id} onClick={() => setSelectedRecipe(recipe)} className={`group relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2`}>
+                             <div
+                                key={recipe.id}
+                                onClick={() => setSelectedRecipe(recipe)}
+                                onMouseMove={(event) => handleCardPointerMove(event, recipe.id)}
+                                onMouseLeave={() => handleCardPointerLeave(recipe.id)}
+                                className={`group premium-card relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2`}
+                                style={{ transform: cardTilt[recipe.id]?.transform }}
+                             >
+                                <div className="card-glare" style={{ '--glare-position': cardTilt[recipe.id]?.glare || '50% 50%' }}></div>
                                 <div className="h-56 overflow-hidden relative">
                                     <img src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " meal")}&w=800&h=600&c=7&rs=1&p=0`} alt={recipe.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" loading="lazy" />
                                     <div className="absolute bottom-4 right-4 flex gap-2">
@@ -742,7 +789,7 @@ function App() {
                                     <h3 className="text-lg font-black mb-2 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
                                     <p className="text-gray-400 dark:text-gray-500 text-sm font-medium line-clamp-2 mb-6 flex-1 leading-relaxed">{recipe.description}</p>
                                 </div>
-                            </div>
+                             </div>
                         ))}
                     </div>
                 )}

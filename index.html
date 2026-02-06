@@ -147,6 +147,40 @@
       .card-3d:hover {
         transform: rotateX(2deg) rotateY(-3deg) translateY(-4px);
       }
+      .premium-card {
+        transform-style: preserve-3d;
+        will-change: transform;
+        transition: transform 220ms ease-out, box-shadow 320ms ease, border-color 320ms ease;
+      }
+      .premium-card > * {
+        transform: translateZ(24px);
+      }
+      .card-glare {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at var(--glare-position, 50% 50%), rgba(255,255,255,0.32), transparent 40%);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 260ms ease;
+        z-index: 20;
+      }
+      .premium-card:hover .card-glare {
+        opacity: 1;
+      }
+      .premium-card::after {
+        content: '';
+        position: absolute;
+        inset: auto 16px 8px 16px;
+        height: 18px;
+        border-radius: 999px;
+        background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.25) 0%, rgba(15, 23, 42, 0) 72%);
+        filter: blur(8px);
+        opacity: 0.45;
+        transition: opacity 300ms ease;
+      }
+      .premium-card:hover::after {
+        opacity: 0.75;
+      }
       .shimmer-border {
         position: relative;
         overflow: hidden;
