@@ -54,7 +54,7 @@ const RecipeDetailModal = ({ recipe, isOpen, onClose, isSaved, onToggleSave, onS
         onClick={onClose}
       />
       
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col transform transition-all animate-[fadeIn_0.2s_ease-out] shimmer-border card-3d">
+      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col min-h-0 transform transition-all animate-[fadeIn_0.2s_ease-out] shimmer-border card-3d">
         
         <div className="relative h-48 sm:h-64 bg-orange-100 dark:bg-gray-800 flex-shrink-0 card-3d">
           <img 
@@ -117,7 +117,7 @@ const RecipeDetailModal = ({ recipe, isOpen, onClose, isSaved, onToggleSave, onS
             </button>
         </div>
 
-        <div className="overflow-y-auto p-6 pt-10 space-y-6 custom-scrollbar">
+        <div className="flex-1 min-h-0 overflow-y-auto p-6 pt-10 space-y-6 custom-scrollbar modal-scroll-area">
             
             <div className="flex flex-wrap gap-4 p-4 bg-orange-50 dark:bg-gray-800/50 rounded-xl border border-orange-100 dark:border-gray-700 items-center justify-between">
                 <div className="flex items-center gap-2">
