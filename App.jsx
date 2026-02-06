@@ -327,6 +327,7 @@ function App() {
   const displayRecipes = getDisplayRecipes();
   const sourceHasRecipes = (viewMode === 'generated' ? recipes : savedRecipes).length > 0;
 
+
   // Static Pages Content
   const AboutPage = () => (
     <div className="max-w-4xl mx-auto py-12 px-6 animate-[fadeIn_0.5s_ease-out]">
@@ -373,8 +374,8 @@ function App() {
   );
 
   const Footer = () => (
-    <footer className={`mt-20 py-16 border-t transition-all duration-700 ${isOffline ? 'bg-stone-50 border-stone-200' : 'bg-white dark:bg-gray-950 border-orange-100 dark:border-gray-800'}`}>
-        <div className="max-w-6xl mx-auto px-4 flex flex-col items-center">
+    <footer className={`mt-20 py-16 transition-all duration-700 ${isOffline ? 'bg-stone-100/70' : 'bg-white/50 dark:bg-gray-950/60'} backdrop-blur-xl`}>
+        <div className="max-w-6xl mx-auto px-4 flex flex-col items-center rounded-3xl border border-white/60 dark:border-gray-800/80 bg-white/70 dark:bg-gray-900/60 py-10 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
             <div className="flex items-center justify-center gap-3 mb-8 cursor-pointer" onClick={() => { setViewMode('generated'); window.scrollTo({top: 0, behavior: 'smooth'}); }}>
                 <div className={`p-2.5 rounded-xl text-white transition-all duration-700 ${isOffline ? 'bg-stone-600' : 'bg-orange-600'}`}>
                     <ChefHatIcon className="w-7 h-7" />
@@ -399,7 +400,7 @@ function App() {
   );
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-gray-950 dark:via-gray-900 dark:to-slate-950 text-gray-800 dark:text-gray-100 font-sans pb-4 transition-all duration-700 ease-in-out ${isOffline ? 'grayscale-[0.3] sepia-[0.1] contrast-[0.9]' : ''}`}>
+    <div className={`relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_10%_15%,rgba(249,115,22,0.16),transparent_38%),radial-gradient(circle_at_85%_20%,rgba(236,72,153,0.14),transparent_35%),radial-gradient(circle_at_45%_85%,rgba(14,165,233,0.12),transparent_40%),linear-gradient(140deg,#fff8ef_0%,#ffffff_42%,#fff1dc_100%)] dark:bg-[radial-gradient(circle_at_12%_20%,rgba(249,115,22,0.22),transparent_35%),radial-gradient(circle_at_86%_10%,rgba(168,85,247,0.2),transparent_32%),linear-gradient(145deg,#020617_0%,#111827_45%,#020617_100%)] text-gray-800 dark:text-gray-100 font-sans pb-6 transition-all duration-700 ease-in-out ${isOffline ? 'grayscale-[0.2] contrast-[0.9]' : ''}`}>
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="animated-blob blob-1 -top-20 -left-20"></div>
         <div className="animated-blob blob-2 top-40 right-10"></div>
@@ -429,8 +430,8 @@ function App() {
           <span className="font-medium text-sm">Copied to clipboard!</span>
       </div>
 
-      <nav className={`bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-orange-100 dark:border-gray-800 sticky top-0 z-30 transition-all duration-500 ${isOffline ? 'translate-y-8 border-stone-200 dark:border-stone-800' : 'translate-y-0'}`}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <nav className={`sticky top-0 z-30 px-3 sm:px-6 pt-3 transition-all duration-500 ${isOffline ? 'translate-y-8' : 'translate-y-0'}`}>
+        <div className="max-w-6xl mx-auto h-16 flex items-center justify-between rounded-2xl border border-white/50 dark:border-white/10 bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl shadow-[0_12px_40px_rgba(15,23,42,0.12)] px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 cursor-pointer group" onClick={() => { setViewMode('generated'); setHasGenerated(false); setRecipes(FEATURED_RECIPES); }}>
             <div className={`p-2 rounded-xl text-white transition-all duration-700 ${isOffline ? 'bg-stone-600 shadow-none' : 'bg-gradient-to-tr from-orange-500 via-amber-500 to-pink-500 shadow-lg shadow-orange-200'}`}>
               <ChefHatIcon className="w-6 h-6" />
@@ -455,24 +456,53 @@ function App() {
         </div>
       </nav>
 
-      <main className={`max-w-6xl mx-auto px-4 pt-10 min-h-[calc(100vh-12rem)] transition-opacity duration-700 ${isOffline ? 'opacity-90' : 'opacity-100'}`}>
+      <main className={`max-w-6xl mx-auto px-4 pt-8 min-h-[calc(100vh-12rem)] transition-opacity duration-700 ${isOffline ? 'opacity-90' : 'opacity-100'}`}>
         
         {viewMode === 'about' && <AboutPage />}
         {viewMode === 'privacy' && <PrivacyPage />}
 
         {viewMode === 'generated' && (
           <>
-            <div className="text-center mb-10 space-y-4">
-              <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight">
-                {isOffline ? 'Your ' : 'Find your next '} 
-                <span className={`transition-colors duration-700 ${isOffline ? 'text-stone-600' : 'text-gradient'}`}>perfect recipe.</span>
-              </h1>
-              <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
-                {isOffline ? 'Browse your cookbook and recently viewed recipes while offline.' : 'Input ingredients or search for any dish globally.'}
-              </p>
-            </div>
+            <section className="mb-12 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6 items-stretch">
+              <div className="glass-card shimmer-border rounded-3xl p-8 md:p-10 border border-white/60 dark:border-gray-700/70 shadow-2xl">
+                <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100/80 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 text-xs font-black tracking-widest uppercase mb-5">AI POWERED CULINARY STUDIO</p>
+                <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-[1.05]">
+                  {isOffline ? 'Your kitchen, still ' : 'Reimagine dinner with '} 
+                  <span className={`transition-colors duration-700 ${isOffline ? 'text-stone-600' : 'text-gradient'}`}>3D recipe magic.</span>
+                </h1>
+                <p className="mt-5 text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl font-medium leading-relaxed">
+                  {isOffline ? 'Browse your cookbook and meal plans while offline with the same premium layout.' : 'Turn any ingredients into restaurant-level ideas. Smart AI planning, immersive visuals, and one-click cookbook saving in a fully revamped experience.'}
+                </p>
+                <div className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    ['10k+', 'Recipes'],
+                    ['60s', 'Avg. Plan Time'],
+                    ['3D', 'Interactive Cards'],
+                    ['Zero Waste', 'Mindset']
+                  ].map(([value, label]) => (
+                    <div key={label} className="rounded-2xl border border-white/70 dark:border-gray-700 bg-white/70 dark:bg-gray-900/50 px-4 py-3">
+                      <p className="text-lg font-black text-gray-900 dark:text-white">{value}</p>
+                      <p className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-gray-400 font-bold">{label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <aside className="relative rounded-3xl overflow-hidden border border-orange-100/70 dark:border-gray-700 bg-gradient-to-br from-gray-900 via-slate-900 to-black p-7 text-white shadow-2xl">
+                <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full bg-orange-500/30 blur-3xl"></div>
+                <div className="absolute -bottom-16 -left-10 w-40 h-40 rounded-full bg-fuchsia-500/30 blur-3xl"></div>
+                <div className="relative z-10 space-y-5">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-black tracking-[0.2em] uppercase">ChefGenie Pro UI</div>
+                  <h2 className="text-2xl font-black leading-tight">Cook by mood, ingredient, or cuisine with cinematic cards.</h2>
+                  <ul className="space-y-3 text-sm text-white/90 font-medium">
+                    <li>• Hover cards with dynamic depth and glare response.</li>
+                    <li>• Capture favorites instantly in your visual cookbook.</li>
+                    <li>• Plan weekly meals with polished drag-and-browse flow.</li>
+                  </ul>
+                </div>
+              </aside>
+            </section>
 
-            <div className={`max-w-4xl mx-auto glass-card shimmer-border rounded-3xl shadow-2xl p-6 md:p-8 mb-12 border transition-all duration-700 relative overflow-hidden ${isOffline ? 'border-stone-200 shadow-stone-100' : 'border-orange-100 dark:border-gray-700 shadow-orange-100/50'}`}>
+            <div className={`max-w-5xl mx-auto glass-card shimmer-border rounded-3xl shadow-2xl p-6 md:p-8 mb-12 border transition-all duration-700 relative overflow-hidden ${isOffline ? 'border-stone-200 shadow-stone-100' : 'border-orange-100 dark:border-gray-700 shadow-orange-100/50'}`}>
               <div className="relative mb-6" ref={wrapperRef}>
                 <input
                   type="text"
@@ -514,15 +544,17 @@ function App() {
               <button
                 onClick={handleGenerate}
                 disabled={loading || isOffline || (ingredients.length === 0 && !inputVal.trim())}
-                className={`w-full py-4.5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all duration-700 ${loading ? 'bg-gray-100 text-gray-400' : isOffline ? 'bg-stone-100 text-stone-400 cursor-not-allowed border-2 border-dashed border-stone-200' : 'neon-button text-white hover:-translate-y-1'}`}
+                className={`w-full py-4.5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all duration-700 find-recipe-btn ${loading ? 'bg-gray-100 text-gray-400 shadow-none' : isOffline ? 'bg-stone-100 text-stone-400 cursor-not-allowed border-2 border-dashed border-stone-200 shadow-none' : 'text-white hover:-translate-y-1 hover:scale-[1.01]'}`}
               >
                 {loading ? <div className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" /> : isOffline ? 'Reconnect to use AI' : <><SparklesIcon className="w-6 h-6" /> Find Recipes</>}
               </button>
               {error && <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-xl text-center text-xs font-bold border border-red-100">{error}</div>}
             </div>
 
+
+            {!hasGenerated && (<>
             {/* SEO Information Section */}
-            <div className="max-w-4xl mx-auto mb-16 p-8 glass-card shimmer-border rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm glow-card card-3d">
+            <div className="max-w-5xl mx-auto mb-16 p-8 glass-card shimmer-border rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm glow-card card-3d">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">How to Use ChefGenie</h2>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                     ChefGenie is your intelligent kitchen companion designed to combat global food waste. Our advanced AI tool helps you transform leftovers into gourmet meals, ensuring no ingredient goes to waste. By analyzing your available items, we provide tailored culinary solutions that are both sustainable and delicious.
@@ -543,7 +575,7 @@ function App() {
                 </div>
             </div>
 
-            <div className="max-w-4xl mx-auto mb-16 grid grid-cols-1 gap-8">
+            <div className="max-w-5xl mx-auto mb-16 grid grid-cols-1 gap-8">
                 <section className="glass-card shimmer-border rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 glow-card card-3d">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
@@ -636,7 +668,7 @@ function App() {
             </div>
 
             {/* Popular AI Recipes Section (SEO Content) */}
-            <div className="max-w-4xl mx-auto mb-16">
+            <div className="max-w-5xl mx-auto mb-16">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-8 flex items-center gap-4">
                     <span className="w-8 h-1.5 bg-orange-600 rounded-full"></span>
                     POPULAR AI RECIPES
@@ -646,7 +678,7 @@ function App() {
                         <div 
                             key={recipe.id} 
                             onClick={() => setSelectedRecipe(recipe)}
-                            className="card-surface rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card card-3d shimmer-border"
+                            className="card-surface premium-card rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col group tilt-card card-3d shimmer-border"
                         >
                             <div className="h-40 overflow-hidden relative">
                                 <img 
@@ -669,8 +701,10 @@ function App() {
                 </div>
             </div>
 
+            </>)}
+
             {(sourceHasRecipes) && (
-                <div className="max-w-4xl mx-auto mb-10">
+                <div className="max-w-5xl mx-auto mb-10">
                     <div className="flex flex-col items-center gap-4">
                         <div className="flex flex-wrap justify-center gap-2">
                             {DIETARY_FILTERS.map(filter => (
@@ -681,7 +715,7 @@ function App() {
                 </div>
             )}
 
-            <div className="max-w-4xl mx-auto space-y-12 animate-[fadeIn_0.5s_ease-out]">
+            <div className="max-w-5xl mx-auto space-y-12 animate-[fadeIn_0.5s_ease-out]">
                 <h2 className="text-2xl font-black flex items-center gap-4 text-gray-900 dark:text-white uppercase tracking-wider">
                     <span className={`w-12 h-1.5 rounded-full transition-colors duration-700 ${isOffline ? 'bg-stone-300' : 'bg-orange-600'}`}></span>
                     {hasGenerated ? `Top Suggestions` : "Chef's Specials"}
@@ -691,7 +725,11 @@ function App() {
                     const isSaved = savedRecipes.some(r => r.id === recipe.id);
                     const cuisineColor = getCuisineColor(recipe.cuisine);
                     return (
-                        <div key={recipe.id} onClick={() => setSelectedRecipe(recipe)} className={`group relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer ${isOffline ? 'border-stone-100 shadow-sm' : 'border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2'}`}>
+                        <div
+                            key={recipe.id}
+                            onClick={() => setSelectedRecipe(recipe)}
+                            className={`group premium-card relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer ${isOffline ? 'border-stone-100 shadow-sm' : 'border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2'}`}
+                        >
                             <div className="h-56 overflow-hidden relative">
                                 <img src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " meal")}&w=800&h=600&c=7&rs=1&p=0`} alt={recipe.name} className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ${isOffline ? 'saturate-[0.15] brightness-[0.95]' : ''}`} loading="lazy" />
                                 {recipe.cuisine && <div className="absolute top-4 left-4 z-10"><span className={`px-3 py-1 rounded-lg text-[9px] font-black text-white shadow-lg border border-white/20 uppercase tracking-widest ${isOffline ? 'bg-stone-600' : cuisineColor}`}>🌍 {recipe.cuisine}</span></div>}
@@ -731,7 +769,11 @@ function App() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pb-20">
                         {displayRecipes.map((recipe) => (
-                             <div key={recipe.id} onClick={() => setSelectedRecipe(recipe)} className={`group relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2`}>
+                             <div
+                                key={recipe.id}
+                                onClick={() => setSelectedRecipe(recipe)}
+                                className={`group premium-card relative flex flex-col h-full bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border transition-all duration-500 cursor-pointer border-gray-50 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2`}
+                             >
                                 <div className="h-56 overflow-hidden relative">
                                     <img src={`https://tse3.mm.bing.net/th?q=${encodeURIComponent(recipe.name + " meal")}&w=800&h=600&c=7&rs=1&p=0`} alt={recipe.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" loading="lazy" />
                                     <div className="absolute bottom-4 right-4 flex gap-2">
@@ -742,7 +784,7 @@ function App() {
                                     <h3 className="text-lg font-black mb-2 group-hover:text-orange-600 transition-colors">{recipe.name}</h3>
                                     <p className="text-gray-400 dark:text-gray-500 text-sm font-medium line-clamp-2 mb-6 flex-1 leading-relaxed">{recipe.description}</p>
                                 </div>
-                            </div>
+                             </div>
                         ))}
                     </div>
                 )}
